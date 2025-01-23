@@ -1,0 +1,126 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background-color: #f3e8e8; /* Grey background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #000000; /* Black text */
+    margin-bottom: 10px;
+}
+
+#settings {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+#settings label {
+    margin-right: 5px;
+    color: #000000; /* Black text */
+}
+
+#settings select,
+#settings button {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#settings select {
+    background-color: #fff;
+    color: #333;
+}
+
+#settings button {
+    background-color: #4c8eff;
+    color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#settings button:hover {
+    background-color: #3a70c8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 90vw;
+    max-width: 400px;
+    border: 2px solid #333;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.cell {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    border: 1px solid #999;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 5px;
+}
+
+.cell > div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cell:hover {
+    background-color: #d0d0d0;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cell.X {
+    color: #ff4c4c;
+}
+
+.cell.O {
+    color: #4c8eff;
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #000000; /* Black text */
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #000000; /* Black text */
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Tic-Tac-Toe</h1>
+        <div id="settings">
+            <label for="game-mode">Game Mode:</label>
+            <select id="game-mode">
+                <option value="computer">Play Against Computer</option>
+                <option value="human">Play Against Human</option>
+            </select>
+            <label for="character-select">Choose Your Character:</label>
+            <select id="character-select">
+                <option value="X">X</option>
+                <option value="O">O</option>
+            </select>
+            <button id="play-again">Play Again</button>
+        </div>
+    </header>
+    <div id="board">
+        <div class="cell" data-index="0"><div></div></div>
+        <div class="cell" data-index="1"><div></div></div>
+        <div class="cell" data-index="2"><div></div></div>
+        <div class="cell" data-index="3"><div></div></div>
+        <div class="cell" data-index="4"><div></div></div>
+        <div class="cell" data-index="5"><div></div></div>
+        <div class="cell" data-index="6"><div></div></div>
+        <div class="cell" data-index="7"><div></div></div>
+        <div class="cell" data-index="8"><div></div></div>
+    </div>
+    <div class="message" id="message"></div>
+    <footer>This game is designed by <a href="https://wa.me/254114159302?text=Hello%20sir,%20great%20idea.%20Let's%20connect." target="_blank">Simon Omuya</a></footer>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        let board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+        const messageElement = document.getElementById('message');
+        const playAgainButton = document.getElementById('play-again');
+        const gameModeSelect = document.getElementById('game-mode');
+        const characterSelect = document.getElementById('character-select');
+        let gameMode = gameModeSelect.value;
+        let playerCharacter = characterSelect.value;
+        let aiCharacter = playerCharacter === 'X' ? 'O' : 'X';
+        let currentPlayer = 'X';
+
+        gameModeSelect.addEventListener('change', () => {
+            gameMode = gameModeSelect.value;
+            resetGame();
+        });
+
+        characterSelect.addEventListener('change', () => {
+            playerCharacter = characterSelect.value;
+            aiCharacter = playerCharacter === 'X' ? 'O' : 'X';
+            resetGame();
+        });
+
+        function updateBoard() {
+            cells.forEach((cell, i) => {
+                cell.querySelector('div').textContent = board[i];
+                cell.className = 'cell';
+                if (board[i] === 'X' || board[i] === 'O') {
+                    cell.classList.add(board[i]);
+                }
+            });
+        }
+
+        function resetGame() {
+            board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+            currentPlayer = 'X';
+            updateBoard();
+            messageElement.textContent = '';
+        }
+
+        function checkWinner(board) {
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            for (let combo of winningCombinations) {
+                const [a, b, c] = combo;
+                if (board[a] === board[b] && board[b] === board[c] && board[a] !== ' ') {
+                    return board[a];
+                }
+            }
+            return null;
+        }
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                const index = cell.getAttribute('data-index');
+                if (board[index] === ' ' && !messageElement.textContent) {
+                    board[index] = currentPlayer;
+                    updateBoard();
+                    const winner = checkWinner(board);
+                    if (winner) {
+                        messageElement.textContent = `${winner} wins!`;
+                    } else if (board.indexOf(' ') === -1) {
+                        messageElement.textContent = "It's a draw!";
+                    } else {
+                        if (gameMode === 'computer' && currentPlayer === playerCharacter) {
+                            fetch('/move', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ board: board }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                board = data.board;
+                                updateBoard();
+                                const aiWinner = checkWinner(board);
+                                if (aiWinner) {
+                                    messageElement.textContent = `${aiWinner} wins!`;
+                                } else if (board.indexOf(' ') === -1) {
+                                    messageElement.textContent = "It's a draw!";
+                                }
+                            });
+                        } else {
+                            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                        }
+                    }
+                }
+            });
+        });
+
+        playAgainButton.addEventListener('click', resetGame);
+
+        updateBoard(); // Initialize the board at the start
+    </script>
+</body>
+</html>
